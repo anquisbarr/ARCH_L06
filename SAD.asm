@@ -63,7 +63,7 @@ main:
 	# TODO4: Loop over the elements of left_image and right_image
 	
 	addi $s3, $0, 0 # $s3 = i = 0
-	addi $s4, $0, 1	# $s4 = image_size = 9
+	addi $s4, $0, 9	# $s4 = image_size = 9
 	j loop
 
 #TODO 2
@@ -110,7 +110,6 @@ recursive_sum:
 return:
 	lw $ra,0($sp)
 	lw $a1,4($sp)
-	addi $sp
 	add $v0,$v0,$0
 	jr $ra			#####################
 	
