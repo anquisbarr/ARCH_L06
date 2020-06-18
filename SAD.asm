@@ -95,23 +95,27 @@ loop:
 
 	
 #TODO 3
-recursive_sum:
-	addi  $sp, $sp, -8 	#stackpointer
-       	sw $ra, 0($sp)
-       	sw $a1, 4($sp)
-      	beq $a2,$0,return
-      	addi $a2,$a2,-1 	# size - 1
-      	sll $t2,$a2,2		# sll del ba
-      	add $t3,$a1,$t2		# 
-      	lw $t4,0($t3)		# sad_array[size - 1]	
-      	jal recursive_sum
-      	add $t5,$v0,$t4		# 
-	jr $ra
-return:
-	lw $ra,0($sp)
-	lw $a1,4($sp)
-	add $v0,$v0,$0
-	jr $ra			#####################
+recursive_sum:    
+	addi $sp, $sp, -8       # Adjust sp
+        addi $t0, $a1, -1       # Compute size - 1
+        sw   $t0, 0($sp)        # Save size - 1 to stack
+        sw   $ra, 4($sp)        # Save return address
+        bne  $a1, $zero, else   # size == 0 ?
+        addi  $v0, $0, 0        # If size == 0, set return value to 0
+        addi $sp, $sp, 8        # Adjust sp
+        jr $ra                  # Return
+
+else:     
+	add  $a1, $t0, $0		#update the second argument
+        jal   recursive_sum 
+        lw    $t0, 0($sp)       # Restore size - 1 from stack
+        sll  $t1, $t0, 2        # Multiply size by 4
+        add   $t1, $t1, $a0     # Compute & arr[ size - 1 ]
+        lw    $t2, 0($t1)       # t2 = arr[ size - 1 ]
+        add   $v0, $v0, $t2     # retval = $v0 + arr[size - 1]
+        lw    $ra, 4($sp)       # restore return address from stack         
+        addi $sp, $sp, 8        # Adjust sp
+        jr $ra                  # Return
 	
 		
 end_loop:
@@ -119,23 +123,21 @@ end_loop:
 	#TODO5: Call recursive_sum and store the result in $t2
 	#Calculate the base address of sad_array (first argument
 	#of the function call)and store in the corresponding register   
-	addi $a1,$s2,0
-	add $a2,$s4,$0
-	jal recursive_sum
 	
+	addi $a0,$s2,0 		# Parametro base address : sad_array
 	# ...
 	
 	# Prepare the second argument of the function call: the size of the array
-	
+	add $a1,$s4,$0 		# Parametro image_size 	
 	#..... 
 	
 	# Call to funtion
-	
+	jal recursive_sum	
 	# ....
 	  
 	
 	#Store the returned value in $t2
-	
+	add $t2, $v0, $0
 	# .....
 	
 
